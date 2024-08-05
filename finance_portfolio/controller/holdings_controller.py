@@ -4,7 +4,7 @@ from finance_portfolio.repository.holding_repository import HoldingRepository
 holding_bp = Blueprint('holding_bp', __name__)
 
 
-@holding_bp.route('/holdings', methods=['POST'])
+@holding_bp.route('/', methods=['POST'])
 def add_holding():
     data = request.get_json()
     if not all(k in data for k in ('ticker', 'quantity', 'price')):
@@ -24,7 +24,7 @@ def add_holding():
     }), 201
 
 
-@holding_bp.route('/holdings/<int:holding_id>', methods=['GET'])
+@holding_bp.route('/<int:holding_id>', methods=['GET'])
 def get_holding(holding_id):
     holding = HoldingRepository.get_holding_by_id(holding_id)
     if holding:
@@ -37,7 +37,7 @@ def get_holding(holding_id):
     return jsonify({'message': 'Holding not found'}), 404
 
 
-@holding_bp.route('/holdings', methods=['GET'])
+@holding_bp.route('/', methods=['GET'])
 def get_all_holdings():
     holdings = HoldingRepository.get_all_holdings()
     return jsonify([{
@@ -48,7 +48,7 @@ def get_all_holdings():
     } for h in holdings])
 
 
-@holding_bp.route('/holdings/<int:holding_id>', methods=['PUT'])
+@holding_bp.route('/<int:holding_id>', methods=['PUT'])
 def update_holding(holding_id):
     data = request.get_json()
     holding = HoldingRepository.update_holding(
@@ -67,7 +67,7 @@ def update_holding(holding_id):
     return jsonify({'message': 'Holding not found'}), 404
 
 
-@holding_bp.route('/holdings/<int:holding_id>', methods=['DELETE'])
+@holding_bp.route('/<int:holding_id>', methods=['DELETE'])
 def delete_holding(holding_id):
     holding = HoldingRepository.delete_holding(holding_id)
     if holding:
