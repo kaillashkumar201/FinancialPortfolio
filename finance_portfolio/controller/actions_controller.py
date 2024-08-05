@@ -7,6 +7,30 @@ from finance_portfolio.repository.transaction_repository import TransactionRepos
 action_bp = Blueprint('action_bp', __name__)
 
 
+def is_valid_ticker(ticker):
+    stock = yf.Ticker(ticker)
+    print(stock.info)
+    try:
+        if stock is not None:
+            return stock.info
+    except KeyError:
+        return False
+    return False
+
+
+@action_bp.route('/get_ticker', methods=['GET'])
+def validate_ticker():
+    ticker = request.args.get('ticker')
+    if not ticker:
+        return jsonify({'error': 'Please provide a ticker symbol'}), 400
+
+    stock= is_valid_ticker(ticker)
+    if stock is not None:
+        return jsonify({'ticker': ticker, 'valid': True, 'info': stock}), 200
+    else:
+        return jsonify({'ticker': ticker, 'valid': False}), 400
+
+
 @action_bp.route('/add_buy_sell', methods=['POST'])
 def add_buy_sell_transaction():
     data = request.get_json()
