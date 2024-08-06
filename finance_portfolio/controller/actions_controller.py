@@ -7,7 +7,7 @@ from finance_portfolio.repository.transaction_repository import TransactionRepos
 action_bp = Blueprint('action_bp', __name__)
 
 
-def is_valid_ticker(ticker):
+def ticker_info(ticker):
     stock = yf.Ticker(ticker)
     print(stock.info)
     try:
@@ -24,7 +24,7 @@ def validate_ticker():
     if not ticker:
         return jsonify({'error': 'Please provide a ticker symbol'}), 400
 
-    stock= is_valid_ticker(ticker)
+    stock= ticker_info(ticker)
     if stock is not None:
         return jsonify({'ticker': ticker, 'valid': True, 'info': stock}), 200
     else:
@@ -116,5 +116,50 @@ def get_historical_data():
         hist = stock.history(start=start_date, end=end_date)
         data = hist.reset_index().to_dict(orient='records')
         return jsonify(data), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@action_bp.route('/networth', methods=['GET'])
+def calculate_networth():
+    try:
+        # Fetch all holdings
+        holdings = HoldingRepository.get_all_holdings()
+
+        if not holdings:
+            return jsonify({'networth': 0, 'message': 'No holdings found'}), 200
+
+        total_networth = 0
+        for holding in holdings:
+            ticker = ticker_info(holding.ticker)
+            current_price = ticker.get('currentPrice')  # Extract currentPrice from the dictionary
+            if current_price is not None:
+                total_networth += holding.quantity * current_price
+
+        return jsonify({'networth': total_networth}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@action_bp.route('/profit_loss', methods=['GET'])
+def calculate_profit_loss():
+    try:
+        # Fetch all holdings
+        holdings = HoldingRepository.get_all_holdings()
+
+        if not holdings:
+            return jsonify({'profit_loss': 0, 'message': 'No holdings found'}), 200
+
+        total_profit_loss = 0
+        for holding in holdings:
+            ticker = ticker_info(holding.ticker)
+            current_price = ticker.get('currentPrice')  # Extract currentPrice from the dictionary
+            if current_price is not None:
+                price = float(holding.price)
+                profit_loss = (current_price - price) * holding.quantity
+                total_profit_loss += profit_loss
+
+        return jsonify({'profit_loss': total_profit_loss}), 200
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
