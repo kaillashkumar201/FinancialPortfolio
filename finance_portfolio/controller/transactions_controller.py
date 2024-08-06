@@ -28,7 +28,7 @@ def add_transaction():
     }), 201
 
 
-@transaction_bp.route('/<int:trans_id>', methods=['GET'])
+@transaction_bp.route('/id/<int:trans_id>', methods=['GET'])
 def get_transaction(trans_id):
     transaction = TransactionRepository.get_transaction_by_id(trans_id)
     if transaction:
@@ -40,6 +40,21 @@ def get_transaction(trans_id):
             'price_per_unit': transaction.price_per_unit
         })
     return jsonify({'message': 'Transaction not found'}), 404
+
+
+@transaction_bp.route('/ticker/<string:ticker>', methods=['GET'])
+def get_transaction_by_ticker(ticker):
+    transactions = TransactionRepository.get_transactions_by_ticker(ticker)
+    if transactions:
+        transactions_list = [{
+            'trans_id': t.trans_id,
+            'ticker': t.ticker,
+            'trans_type': t.trans_type,
+            'quantity': t.quantity,
+            'price_per_unit': t.price_per_unit
+        } for t in transactions]
+        return jsonify(transactions_list), 200
+    return jsonify({'message': 'Transactions not found for ticker'}), 404
 
 
 @transaction_bp.route('/', methods=['GET'])

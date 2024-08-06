@@ -47,6 +47,10 @@ class TransactionRepository:
             db.session.commit()
         return transaction
 
+    @staticmethod
+    def get_transactions_by_ticker(ticker):
+        return Transaction.query.filter_by(ticker=ticker).all()
+
 
 if __name__ == '__main__':
     app = create_app()
