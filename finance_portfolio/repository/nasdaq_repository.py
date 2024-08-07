@@ -8,11 +8,6 @@ class NasdaqRepository:
 
     @staticmethod
     def search_name(query):
-        # regex_pattern = f'.*{query}.*'
-        # results = Nasdaq.query.filter(Nasdaq.name.op('REGEXP')(regex_pattern)).all()
-        # return results
-        # return Nasdaq.query.filter(Nasdaq.name.like(f'%{query}%')).all()
-
         results = (
             db.session.query(
                 Nasdaq.name,
