@@ -1,10 +1,14 @@
 from flask import Blueprint, request, jsonify
 import yfinance as yf
+from sqlalchemy import desc
+from finance_portfolio import db
 
 from finance_portfolio.model import nasdaq
 from finance_portfolio.repository.holding_repository import HoldingRepository
 from finance_portfolio.repository.nasdaq_repository import NasdaqRepository
 from finance_portfolio.repository.transaction_repository import TransactionRepository
+
+from finance_portfolio.model.transactions import Transaction
 
 action_bp = Blueprint('action_bp', __name__)
 
@@ -35,6 +39,7 @@ def validate_ticker():
 
 @action_bp.route('/add_buy_sell', methods=['POST'])
 def add_buy_sell_transaction():
+    global new_cumulative
     data = request.get_json()
     if not all(k in data for k in ('ticker', 'trans_type', 'quantity', 'price_per_unit')):
         return jsonify({'message': 'Missing data'}), 400
@@ -51,6 +56,33 @@ def add_buy_sell_transaction():
         quantity=quantity,
         price_per_unit=price_per_unit
     )
+
+    # Fetch the most recent transaction for cumulative update
+    latest_transaction = Transaction.query.order_by(desc(Transaction.last_modified)).offset(1).limit(1).first()
+    # print(latest_transaction.trans_id)
+    # print(latest_transaction.cumulative)
+    if latest_transaction:
+        previous_cumulative = latest_transaction.cumulative if latest_transaction.cumulative is not None else 0.0
+
+        # Calculate new cumulative value
+        if new_transaction.trans_type == 'buy':
+            new_cumulative = previous_cumulative - (new_transaction.quantity * new_transaction.price_per_unit)
+        elif new_transaction.trans_type == 'sell':
+            new_cumulative = previous_cumulative + (new_transaction.quantity * new_transaction.price_per_unit)
+        else:
+            new_cumulative = previous_cumulative
+
+        # Update the cumulative value for the new transaction
+        new_transaction.cumulative = new_cumulative
+        db.session.commit()
+    else:
+        if new_transaction.trans_type == 'buy':
+            new_cumulative = -1 * (new_transaction.quantity * new_transaction.price_per_unit)
+        elif new_transaction.trans_type == 'sell':
+            new_cumulative = new_transaction.quantity * new_transaction.price_per_unit
+
+        new_transaction.cumulative= new_cumulative
+        db.session.commit()
 
     # Check if the ticker exists in the holdings table
     existing_holding = HoldingRepository.get_holding_by_ticker(ticker)
@@ -100,7 +132,8 @@ def add_buy_sell_transaction():
         'ticker': new_transaction.ticker,
         'trans_type': new_transaction.trans_type,
         'quantity': new_transaction.quantity,
-        'price_per_unit': new_transaction.price_per_unit
+        'price_per_unit': new_transaction.price_per_unit,
+        'last_modified': new_transaction.last_modified
     }), 201
 
 

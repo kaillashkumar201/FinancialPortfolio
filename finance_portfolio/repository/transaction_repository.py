@@ -51,6 +51,10 @@ class TransactionRepository:
     def get_transactions_by_ticker(ticker):
         return Transaction.query.filter_by(ticker=ticker).all()
 
+    @staticmethod
+    def get_all_cumulative_values():
+        return db.session.query(Transaction.cumulative).all()
+
 
 if __name__ == '__main__':
     app = create_app()

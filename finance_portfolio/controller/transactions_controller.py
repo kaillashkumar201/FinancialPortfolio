@@ -24,7 +24,8 @@ def add_transaction():
         'ticker': new_transaction.ticker,
         'trans_type': new_transaction.trans_type,
         'quantity': new_transaction.quantity,
-        'price_per_unit': new_transaction.price_per_unit
+        'price_per_unit': new_transaction.price_per_unit,
+        'last_modified': new_transaction.last_modified
     }), 201
 
 
@@ -37,7 +38,8 @@ def get_transaction(trans_id):
             'ticker': transaction.ticker,
             'trans_type': transaction.trans_type,
             'quantity': transaction.quantity,
-            'price_per_unit': transaction.price_per_unit
+            'price_per_unit': transaction.price_per_unit,
+            'last_modified': transaction.last_modified
         })
     return jsonify({'message': 'Transaction not found'}), 404
 
@@ -51,7 +53,8 @@ def get_transaction_by_ticker(ticker):
             'ticker': t.ticker,
             'trans_type': t.trans_type,
             'quantity': t.quantity,
-            'price_per_unit': t.price_per_unit
+            'price_per_unit': t.price_per_unit,
+            'last_modified': t.last_modified
         } for t in transactions]
         return jsonify(transactions_list), 200
     return jsonify({'message': 'Transactions not found for ticker'}), 404
@@ -65,7 +68,8 @@ def get_all_transactions():
         'ticker': t.ticker,
         'trans_type': t.trans_type,
         'quantity': t.quantity,
-        'price_per_unit': t.price_per_unit
+        'price_per_unit': t.price_per_unit,
+        'last_modified': t.last_modified
     } for t in transactions])
 
 
@@ -85,7 +89,8 @@ def update_transaction(trans_id):
             'ticker': transaction.ticker,
             'trans_type': transaction.trans_type,
             'quantity': transaction.quantity,
-            'price_per_unit': transaction.price_per_unit
+            'price_per_unit': transaction.price_per_unit,
+            'last_modified': transaction.last_modified
         })
     return jsonify({'message': 'Transaction not found'}), 404
 
@@ -96,3 +101,18 @@ def delete_transaction(trans_id):
     if transaction:
         return jsonify({'message': 'Transaction deleted'}), 200
     return jsonify({'message': 'Transaction not found'}), 404
+
+
+@transaction_bp.route('/cumulative_values', methods=['GET'])
+def get_cumulative_values():
+    try:
+        # Fetch all cumulative values
+        cumulative_values = TransactionRepository.get_all_cumulative_values()
+
+        # Extract the cumulative values from the result
+        result_list = [value[0] for value in cumulative_values]
+
+        return jsonify(result_list), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

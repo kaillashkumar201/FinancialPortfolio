@@ -1,4 +1,5 @@
 from finance_portfolio import db
+from datetime import datetime
 
 
 class Transaction(db.Model):
@@ -9,6 +10,8 @@ class Transaction(db.Model):
     trans_type = db.Column(db.Enum('buy', 'sell'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     price_per_unit = db.Column(db.Double, nullable=False)
+    cumulative = db.Column(db.Double, nullable=False)
+    last_modified = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
 # class Transactions:
 #     def __init__(self, trans_id, ticker, trans_type, quantity, price_per_unit):

@@ -20,7 +20,8 @@ def add_holding():
         'holding_id': new_holding.holding_id,
         'ticker': new_holding.ticker,
         'quantity': new_holding.quantity,
-        'price': new_holding.price
+        'price': new_holding.price,
+        'last_modified': new_holding.last_modified
     }), 201
 
 
@@ -32,7 +33,8 @@ def get_holding(holding_id):
             'holding_id': holding.holding_id,
             'ticker': holding.ticker,
             'quantity': holding.quantity,
-            'price': holding.price
+            'price': holding.price,
+            'last_modified': holding.last_modified
         })
     return jsonify({'message': 'Holding not found'}), 404
 
@@ -44,7 +46,8 @@ def get_all_holdings():
         'holding_id': h.holding_id,
         'ticker': h.ticker,
         'quantity': h.quantity,
-        'price': h.price
+        'price': h.price,
+        'last_modified': h.last_modified
     } for h in holdings])
 
 
@@ -62,7 +65,8 @@ def update_holding(holding_id):
             'holding_id': holding.holding_id,
             'ticker': holding.ticker,
             'quantity': holding.quantity,
-            'price': holding.price
+            'price': holding.price,
+            'last_modified': holding.last_modified
         })
     return jsonify({'message': 'Holding not found'}), 404
 

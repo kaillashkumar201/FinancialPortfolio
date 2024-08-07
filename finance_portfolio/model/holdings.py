@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from finance_portfolio import db
 
 
@@ -8,6 +10,7 @@ class Holding(db.Model):
     ticker = db.Column(db.String(10), nullable=False, unique=True)
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Double, nullable=False)
+    last_modified = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     def __repr__(self):
         return f"Ticker : {self.ticker}, Quantity: {self.quantity}, Price: {self.price}"
