@@ -1,7 +1,9 @@
 from flask import Blueprint, request, jsonify
 import yfinance as yf
 
+from finance_portfolio.model import nasdaq
 from finance_portfolio.repository.holding_repository import HoldingRepository
+from finance_portfolio.repository.nasdaq_repository import NasdaqRepository
 from finance_portfolio.repository.transaction_repository import TransactionRepository
 
 action_bp = Blueprint('action_bp', __name__)
@@ -24,7 +26,7 @@ def validate_ticker():
     if not ticker:
         return jsonify({'error': 'Please provide a ticker symbol'}), 400
 
-    stock= ticker_info(ticker)
+    stock = ticker_info(ticker)
     if stock is not None:
         return jsonify({'ticker': ticker, 'valid': True, 'info': stock}), 200
     else:
@@ -141,6 +143,7 @@ def calculate_networth():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 @action_bp.route('/profit_loss', methods=['GET'])
 def calculate_profit_loss():
     try:
@@ -160,6 +163,21 @@ def calculate_profit_loss():
                 total_profit_loss += profit_loss
 
         return jsonify({'profit_loss': total_profit_loss}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@action_bp.route('/search_ticker', methods=['GET'])
+def search_ticker():
+    query = request.args.get('query')
+    if not query:
+        return jsonify({'error': 'Please provide a search query'}), 400
+
+    try:
+        results = NasdaqRepository.search_name(query)
+        result_list = [{'name': result.name, 'ticker': result.ticker} for result in results]
+        return jsonify(result_list), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
