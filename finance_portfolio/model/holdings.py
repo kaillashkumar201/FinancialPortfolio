@@ -7,7 +7,7 @@ class Holding(db.Model):
     holding_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     ticker = db.Column(db.String(10), nullable=False, unique=True)
     quantity = db.Column(db.Integer, nullable=False)
-    price = db.Column(db.Numeric(15, 2), nullable=False)
+    price = db.Column(db.Double, nullable=False)
 
     def __repr__(self):
         return f"Ticker : {self.ticker}, Quantity: {self.quantity}, Price: {self.price}"

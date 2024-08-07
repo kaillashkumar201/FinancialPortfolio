@@ -28,4 +28,7 @@ def create_app():
     from .controller.actions_controller import action_bp
     app.register_blueprint(action_bp, url_prefix='/actions')
 
+    from .controller.watchlist_controller import watchlist_bp
+    app.register_blueprint(watchlist_bp, url_prefix='/watchlist')
+
     return app

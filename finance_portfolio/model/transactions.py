@@ -8,7 +8,7 @@ class Transaction(db.Model):
     ticker = db.Column(db.String(10), nullable=False)
     trans_type = db.Column(db.Enum('buy', 'sell'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    price_per_unit = db.Column(db.Numeric(15, 2), nullable=False)
+    price_per_unit = db.Column(db.Double, nullable=False)
 
 # class Transactions:
 #     def __init__(self, trans_id, ticker, trans_type, quantity, price_per_unit):
