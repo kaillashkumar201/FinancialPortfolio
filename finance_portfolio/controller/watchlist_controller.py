@@ -5,7 +5,7 @@ from finance_portfolio.repository.watchlist_repository import WatchlistRepositor
 watchlist_bp = Blueprint('watchlist_bp', __name__)
 
 
-@watchlist_bp.route('/', methods=['POST'])
+@watchlist_bp.route('/put', methods=['POST'])
 def add_to_watchlist():
     data = request.get_json()
     ticker = data.get('ticker')
