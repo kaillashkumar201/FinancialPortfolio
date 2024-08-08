@@ -545,6 +545,32 @@
         }
       }
     },
+    "/actions/ticker_profit_loss": {
+      "get": {
+        "tags": ["Action"],
+        "description": "Get profit/loss details of each ticker based on current market value",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "ticker",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticker profit loss retrieved"
+          },
+          "400": {
+            "description": "Invalid query"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
     "/actions/get_news": {
       "get": {
         "tags": ["Action"],

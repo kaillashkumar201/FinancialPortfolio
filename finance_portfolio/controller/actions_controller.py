@@ -116,7 +116,7 @@ def add_buy_sell_transaction():
                     HoldingRepository.update_holding(
                         holding_id=existing_holding.holding_id,
                         quantity=new_quantity,
-                        price=existing_holding.price  # Price remains the same for remaining holdings
+                        price=existing_holding.price
                     )
                 else:
                     # Delete holding if quantity reaches zero
@@ -181,7 +181,6 @@ def calculate_networth():
 @action_bp.route('/profit_loss', methods=['GET'])
 def calculate_profit_loss():
     try:
-        # Fetch all holdings
         holdings = HoldingRepository.get_all_holdings()
 
         if not holdings:
@@ -202,6 +201,34 @@ def calculate_profit_loss():
         return jsonify({'error': str(e)}), 500
 
 
+@action_bp.route('/ticker_profit_loss', methods=['GET'])
+def ticker_profit_loss():
+    try:
+        ticker = request.args.get('ticker')
+
+        if not ticker:
+            return jsonify({'message': 'Please provide ticker'}), 400
+
+        holding= HoldingRepository.get_holding_by_ticker(ticker)
+        price= float(holding.price)
+        current_price = ticker_info(ticker).get('currentPrice')
+        if current_price is None:
+            return jsonify({'message': 'Could not get latest price'}), 400
+
+        return jsonify({
+            'ticker': ticker,
+            "ticker_live_price": current_price,
+            "ticker_holding_price": holding.price,
+            "net_ticker_live_price": current_price * holding.quantity,
+            "net_ticker_holding_price": holding.price * holding.quantity,
+            "ticker_profit_loss": current_price - holding.price,
+            "net_ticker_profit_loss": (current_price - holding.price) * holding.quantity
+        }), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @action_bp.route('/search_ticker', methods=['GET'])
 def search_ticker():
     query = request.args.get('query')
@@ -210,7 +237,7 @@ def search_ticker():
 
     try:
         results = NasdaqRepository.search_name(query)
-        result_list = [{'name': result.name, 'ticker': result.ticker} for result in results]
+        result_list = [{'longName': result.name, 'ticker': result.ticker} for result in results]
         return jsonify(result_list), 200
 
     except Exception as e:
@@ -233,6 +260,7 @@ def get_news():
             news = stock.get_news()
             news_details = [
                 {
+
                     'ticker': ticker,
                     'title': item.get('title', 'No title'),
                     'publisher': item.get('publisher', 'No publisher'),
