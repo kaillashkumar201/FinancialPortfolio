@@ -106,11 +106,11 @@ def delete_transaction(trans_id):
 @transaction_bp.route('/cumulative_values', methods=['GET'])
 def get_cumulative_values():
     try:
-        # Fetch all cumulative values
+        # Fetch all cumulative values and last_modified timestamps
         cumulative_values = TransactionRepository.get_all_cumulative_values()
 
-        # Extract the cumulative values from the result
-        result_list = [value[0] for value in cumulative_values]
+        # Format the results into a list of dictionaries
+        result_list = [{"cumulative": value.cumulative, "last_modified": value.last_modified} for value in cumulative_values]
 
         return jsonify(result_list), 200
 

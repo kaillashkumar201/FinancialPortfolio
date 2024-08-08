@@ -1,0 +1,614 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Finance Portfolio API",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Transaction",
+      "description": "Operations related to transactions"
+    },
+    {
+      "name": "Holding",
+      "description": "Operations related to holdings"
+    },
+    {
+      "name": "Watchlist",
+      "description": "Operations related to watchlist"
+    },
+    {
+      "name": "Action",
+      "description": "Operations related to various actions"
+    }
+  ],
+  "paths": {
+    "/transactions": {
+      "post": {
+        "tags": ["Transaction"],
+        "description": "Add a new transaction",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "transaction",
+            "in": "body",
+            "description": "Transaction data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Transaction"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Transaction created"
+          },
+          "400": {
+            "description": "Invalid request data"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Transaction"],
+        "description": "Get all transactions",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/transactions/id/{trans_id}": {
+      "get": {
+        "tags": ["Transaction"],
+        "description": "Get transaction by ID",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "trans_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "404": {
+            "description": "Transaction not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Transaction"],
+        "description": "Update a transaction",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "trans_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "transaction",
+            "in": "body",
+            "description": "Transaction data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Transaction"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction updated"
+          },
+          "400": {
+            "description": "Invalid request data"
+          },
+          "404": {
+            "description": "Transaction not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Transaction"],
+        "description": "Delete a transaction",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "trans_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction deleted"
+          },
+          "404": {
+            "description": "Transaction not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/transactions/ticker/{ticker}": {
+      "get": {
+        "tags": ["Transaction"],
+        "description": "Get transactions by ticker",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "ticker",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "404": {
+            "description": "Transactions not found for ticker"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/transactions/cumulative_values": {
+      "get": {
+        "tags": ["Transaction"],
+        "description": "Get all cumulative values",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/holdings": {
+      "post": {
+        "tags": ["Holding"],
+        "description": "Add a new holding",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "holding",
+            "in": "body",
+            "description": "Holding data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Holding"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Holding created"
+          },
+          "400": {
+            "description": "Invalid request data"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Holding"],
+        "description": "Get all holdings",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/holdings/{holding_id}": {
+      "get": {
+        "tags": ["Holding"],
+        "description": "Get holding by ID",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "holding_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "404": {
+            "description": "Holding not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Holding"],
+        "description": "Update a holding",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "holding_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "holding",
+            "in": "body",
+            "description": "Holding data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Holding"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Holding updated"
+          },
+          "400": {
+            "description": "Invalid request data"
+          },
+          "404": {
+            "description": "Holding not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Holding"],
+        "description": "Delete a holding",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "holding_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Holding deleted"
+          },
+          "404": {
+            "description": "Holding not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/watchlists/put": {
+      "post": {
+        "tags": ["Watchlist"],
+        "description": "Add to watchlist",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "watchlist",
+            "in": "body",
+            "description": "Watchlist data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Watchlist"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Watchlist entry created"
+          },
+          "400": {
+            "description": "Invalid request data"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/watchlists": {
+      "get": {
+        "tags": ["Watchlist"],
+        "description": "Get all watchlists",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/watchlists/{ticker}": {
+      "delete": {
+        "tags": ["Watchlist"],
+        "description": "Remove from watchlist",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "ticker",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Watchlist entry deleted"
+          },
+          "404": {
+            "description": "Watchlist entry not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/actions/get_ticker": {
+      "get": {
+        "tags": ["Action"],
+        "description": "Validate ticker",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "ticker",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticker validated"
+          },
+          "400": {
+            "description": "Invalid ticker"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/actions/add_buy_sell": {
+      "post": {
+        "tags": ["Action"],
+        "description": "Add buy/sell transaction",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "transaction",
+            "in": "body",
+            "description": "Transaction data",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Transaction"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Transaction created"
+          },
+          "400": {
+            "description": "Invalid request data"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/actions/historical_data": {
+      "get": {
+        "tags": ["Action"],
+        "description": "Get historical data",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "ticker",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historical data retrieved"
+          },
+          "400": {
+            "description": "Invalid request data"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/actions/networth": {
+      "get": {
+        "tags": ["Action"],
+        "description": "Calculate net worth",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Net worth calculated"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/actions/profit_loss": {
+      "get": {
+        "tags": ["Action"],
+        "description": "Calculate profit/loss",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Profit/loss calculated"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/actions/search_ticker": {
+      "get": {
+        "tags": ["Action"],
+        "description": "Search ticker",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results retrieved"
+          },
+          "400": {
+            "description": "Invalid query"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/actions/get_news": {
+      "get": {
+        "tags": ["Action"],
+        "description": "Get news for all holdings",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "News retrieved"
+          },
+          "404": {
+            "description": "No holdings found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Transaction": {
+      "type": "object",
+      "required": ["ticker", "trans_type", "quantity", "price_per_unit"],
+      "properties": {
+        "ticker": {
+          "type": "string"
+        },
+        "trans_type": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer"
+        },
+        "price_per_unit": {
+          "type": "number"
+        },
+        "cumulative": {
+          "type": "number"
+        }
+      }
+    },
+    "Holding": {
+      "type": "object",
+      "required": ["ticker", "quantity", "price"],
+      "properties": {
+        "ticker": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer"
+        },
+        "price": {
+          "type": "number"
+        }
+      }
+    },
+    "Watchlist": {
+      "type": "object",
+      "required": ["ticker"],
+      "properties": {
+        "ticker": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

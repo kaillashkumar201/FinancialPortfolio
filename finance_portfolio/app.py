@@ -1,7 +1,8 @@
 from finance_portfolio import create_app
+from flasgger import Swagger
+
 
 app = create_app()
-
 
 @app.route('/')
 def check():

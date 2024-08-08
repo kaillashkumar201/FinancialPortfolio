@@ -53,7 +53,7 @@ class TransactionRepository:
 
     @staticmethod
     def get_all_cumulative_values():
-        return db.session.query(Transaction.cumulative).all()
+        return db.session.query(Transaction.cumulative, Transaction.last_modified).all()
 
 
 if __name__ == '__main__':
