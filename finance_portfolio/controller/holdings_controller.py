@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify
+
+from finance_portfolio.controller.actions_controller import ticker_info
 from finance_portfolio.repository.holding_repository import HoldingRepository
 
 holding_bp = Blueprint('holding_bp', __name__)
@@ -38,16 +40,29 @@ def get_holding(holding_id):
         })
     return jsonify({'message': 'Holding not found'}), 404
 
+def get_ticker_helper(ticker):
+    holding = HoldingRepository.get_holding_by_ticker(ticker)
+    price = float(holding.price)
+    current_price = ticker_info(ticker).get('currentPrice')
+    net_ticker_profit_loss = (current_price - holding.price) * holding.quantity
+    profit_loss_percent = ((current_price - price) / price) * 100
+    return {
+        "net_ticker_profit_loss": net_ticker_profit_loss,
+        "percent_change": profit_loss_percent
+    }
 
 @holding_bp.route('/', methods=['GET'])
 def get_all_holdings():
     holdings = HoldingRepository.get_all_holdings()
+
     return jsonify([{
         'holding_id': h.holding_id,
         'ticker': h.ticker,
         'quantity': h.quantity,
         'price': h.price,
-        'last_modified': h.last_modified
+        'last_modified': h.last_modified,
+        'net_ticker_profit_loss': get_ticker_helper(h.ticker)["net_ticker_profit_loss"],
+        'percent_change': get_ticker_helper(h.ticker)["percent_change"]
     } for h in holdings])
 
 

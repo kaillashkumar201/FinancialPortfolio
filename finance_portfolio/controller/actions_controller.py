@@ -222,7 +222,7 @@ def ticker_profit_loss():
             "net_ticker_live_price": current_price * holding.quantity,
             "net_ticker_holding_price": holding.price * holding.quantity,
             "ticker_profit_loss": current_price - holding.price,
-            "net_ticker_profit_loss": (current_price - holding.price) * holding.quantity
+            "net_ticker_profit_loss": (current_price - holding.price) * holding.quantity,
         }), 200
 
     except Exception as e:
