@@ -4,6 +4,7 @@ from sqlalchemy import desc
 from finance_portfolio import db
 
 from finance_portfolio.model import nasdaq
+from finance_portfolio.model.holdings import Holding
 from finance_portfolio.repository.holding_repository import HoldingRepository
 from finance_portfolio.repository.nasdaq_repository import NasdaqRepository
 from finance_portfolio.repository.transaction_repository import TransactionRepository
@@ -211,6 +212,36 @@ def search_ticker():
         results = NasdaqRepository.search_name(query)
         result_list = [{'name': result.name, 'ticker': result.ticker} for result in results]
         return jsonify(result_list), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@action_bp.route('/get_news', methods=['GET'])
+def get_news():
+    try:
+        # Fetch all holdings
+        holdings = Holding.query.all()
+
+        if not holdings:
+            return jsonify({'message': 'No holdings found'}), 404
+
+        all_news = []
+        for holding in holdings:
+            ticker = holding.ticker
+            stock = yf.Ticker(ticker)
+            news = stock.get_news()
+            news_details = [
+                {
+                    'ticker': ticker,
+                    'title': item.get('title', 'No title'),
+                    'publisher': item.get('publisher', 'No publisher'),
+                    'link': item.get('link', 'No link')
+                } for item in news if 'link' in item
+            ]
+            all_news.extend(news_details)
+
+        return jsonify(all_news), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
