@@ -62,7 +62,8 @@ def get_all_holdings():
         'price': h.price,
         'last_modified': h.last_modified,
         'net_ticker_profit_loss': get_ticker_helper(h.ticker)["net_ticker_profit_loss"],
-        'percent_change': get_ticker_helper(h.ticker)["percent_change"]
+        'percent_change': get_ticker_helper(h.ticker)["percent_change"],
+        'current_holdings_price': ticker_info(h.ticker).get('currentPrice') * h.quantity
     } for h in holdings])
 
 
